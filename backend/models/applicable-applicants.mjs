@@ -3,11 +3,11 @@ import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 
 const ApplicableApplicants = new Schema({
-    "applicable_applicants": {
+    "applicableApplicants": {
         type: [String],
         required: true
     }
 });
 
-export default mongoose.model('ApplicableApplicants', ApplicableApplicants);
+export default mongoose.model('applicableapplicants', ApplicableApplicants);
 
