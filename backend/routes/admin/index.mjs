@@ -1,0 +1,16 @@
+import { Router } from "express";
+
+import addConstraint from './add-constraint.mjs';
+import approveAll from './approve-all.mjs'
+import approveAllocation from './approve-allocation.mjs'
+import deleteConstraint from './delete-constraint.mjs'
+import findNextRoom from './find-next-room.mjs'
+import getConstraints from './get-constraints.mjs'
+
+
+
+const router = Router();
+
+router.use('/admin',addConstraint,approveAll,approveAllocation,deleteConstraint,findNextRoom,getConstraints);
+export default router;
+
