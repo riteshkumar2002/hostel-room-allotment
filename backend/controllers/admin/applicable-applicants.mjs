@@ -9,7 +9,7 @@ export default async function(req, res) {
         res.status(200).json({ "status": "success" });
 
     } catch(err) {
-        res.status(400).json({ "status": "failed", "message": err.message });
+        res.status(500).json({ "status": "failed", "message": err.message });
     }
     
 }
