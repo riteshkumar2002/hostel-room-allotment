@@ -1,9 +1,5 @@
+import { Router } from "express";
+import controller from "../../controllers/user/allocate-room.mjs";
 
-router.post('/allocate-room', async (req, res) => {
-    try {
-        const newAllocation = await Allocation.create(req.body);
-        res.status(201).json(newAllocation);
-    } catch (err) {
-        res.status(400).json({ error: err.message });
-    }
-});
+const router = Router();
+router.post('/allocate-room', controller);
