@@ -1,0 +1,9 @@
+
+router.get('/get-constraints', async (req, res) => {
+    try {
+        const constraints = await Constraint.find();
+        res.status(200).json(constraints);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});

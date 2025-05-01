@@ -1,6 +1,6 @@
 // index.js
 import express from 'express';
-import adminRoutes from './routers/admin.js';
+import adminRoutes from './routes/admin.js';
 import "./config/database.mjs";
 // import userRoutes from './routers/user.js';
 
