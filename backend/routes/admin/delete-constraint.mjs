@@ -4,3 +4,5 @@ const router = Router();
 
 
 router.delete('/delete-constraint/:id',controller );
+
+export default router;

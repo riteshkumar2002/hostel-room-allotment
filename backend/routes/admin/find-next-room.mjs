@@ -5,3 +5,5 @@ const router = Router();
 
 
 router.get('/find-next-room', controller );
+
+export default router;
