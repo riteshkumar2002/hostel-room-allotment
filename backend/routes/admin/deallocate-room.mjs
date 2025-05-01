@@ -1,5 +1,5 @@
 import { Router } from "express";
-import controller from "../../controllers/user/deallocate-room.mjs"
+import controller from "../../controllers/admin/deallocate-room.mjs"
 
 const router = Router();
 router.delete('/deallocate-room', controller);

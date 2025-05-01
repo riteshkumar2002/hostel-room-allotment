@@ -1,5 +1,5 @@
 import { Router } from "express";
-import controller from "../../controllers/user/allocate-room.mjs";
+import controller from "../../controllers/admin/allocate-room.mjs";
 
 const router = Router();
 router.post('/allocate-room', controller);
