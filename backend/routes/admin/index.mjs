@@ -12,12 +12,13 @@ import findNextRoom from './find-next-room.mjs'
 
 import allcateRoom from './allocate-room.mjs'
 import deallocateRoom from './deallocate-room.mjs'
+import applicableApplicants from './applicable-applicants.mjs'
 
 
 
 
 const router = Router();
 
-router.use('/admin',addConstraint,approveAll,approveAllocation,deleteConstraint,findNextRoom,getConstraints,allcateRoom,deallocateRoom);
+router.use('/admin',addConstraint,approveAll,approveAllocation,deleteConstraint,findNextRoom,getConstraints,allcateRoom,deallocateRoom,applicableApplicants);
 export default router;
 
