@@ -1,4 +1,4 @@
-async (req, res) => {
+export default async (req, res) => {
     try {
         const newAllocation = await Allocation.create(req.body);
         res.status(201).json(newAllocation);
