@@ -7,18 +7,12 @@ import getConstraints from './get-constraints.mjs'
 import approveAll from './approve-all.mjs'
 import approveAllocation from './approve-allocation.mjs'
 
-import findNextRoom from './find-next-room.mjs'
-
-
 import allcateRoom from './allocate-room.mjs'
 import deallocateRoom from './deallocate-room.mjs'
 import applicableApplicants from './applicable-applicants.mjs'
 
-
-
-
 const router = Router();
 
-router.use('/admin',addConstraint,approveAll,approveAllocation,deleteConstraint,findNextRoom,getConstraints,allcateRoom,deallocateRoom,applicableApplicants);
+router.use('/admin',addConstraint,approveAll,approveAllocation,deleteConstraint,getConstraints,allcateRoom,deallocateRoom,applicableApplicants);
 export default router;
 
