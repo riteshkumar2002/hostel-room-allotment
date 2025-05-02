@@ -1,10 +1,12 @@
-
+import Room from '../../models/room.js'
+import Constraint from '../../models/constraint.js';
 export default async (req, res) => {
     try {
         const { start_room, end_room, ...rest } = req.body;
 
         const startRoom = await Room.findOne({ room_no: start_room });
         const endRoom = await Room.findOne({ room_no: end_room });
+        console.log(startRoom,endRoom);
 
         if (!startRoom || !endRoom) {
             return res.status(404).json({ error: 'Start or End room not found' });
