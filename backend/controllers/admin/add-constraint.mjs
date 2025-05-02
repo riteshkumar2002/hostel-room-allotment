@@ -12,14 +12,11 @@ export default async (req, res) => {
 
         const startRoomIndex = startRoomDetails.index;
         const endRoomIndex = startRoomIndex + numOfRooms - 1;
-
         const endRoomDetails = await Room.findOne({ index: endRoomIndex });
 
         if (!endRoomDetails) {
             return res.status(404).json({ message: 'end room not found' });
         }
-
-        const endRoomIndex = endRoomDetails.index;
 
         const conflictingConstraints = await Constraint.find({
             $or: [
