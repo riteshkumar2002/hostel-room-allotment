@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 
 const ConstraintSchema = new Schema({
-  no_of_rooms: {
+  num_of_rooms: {
     type: Number,
     required: true
   },
