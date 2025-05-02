@@ -21,8 +21,8 @@ export default async (req, res) => {
         const conflictingConstraints = await Constraint.find({
             $or: [
                 {
-                    start_room_index: { $lte: endIndex },
-                    end_room_index: { $gte: startIndex }
+                    start_room_index: { $lte: endRoomIndex },
+                    end_room_index: { $gte: startRoomIndex }
                 }
             ]
         });
@@ -37,8 +37,8 @@ export default async (req, res) => {
         const newConstraintData = {
             ...rest,
             num_of_rooms: numOfRooms,
-            start_room,
-            end_room,
+            start_room: startRoom,
+            end_room: endRoomDetails.room_no,
             start_room_index: startRoomIndex,
             end_room_index: endRoomIndex,
         };
