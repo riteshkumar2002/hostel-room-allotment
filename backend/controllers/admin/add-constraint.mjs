@@ -2,22 +2,24 @@ import Room from '../../models/room.js'
 import Constraint from '../../models/constraint.js';
 export default async (req, res) => {
     try {
-        const { start_room, end_room, ...rest } = req.body;
+        const { startRoom, numOfRooms, ...rest } = req.body;
 
-        const startRoom = await Room.findOne({ room_no: start_room });
-        const endRoom = await Room.findOne({ room_no: end_room });
-        console.log(startRoom,endRoom);
+        const startRoomDetails = await Room.findOne({ room_no: startRoom });
 
-        if (!startRoom || !endRoom) {
-            return res.status(404).json({ error: 'Start or End room not found' });
+        if (!startRoomDetails) {
+            return res.status(404).json({ message: 'Start room not found' });
         }
 
-        const startIndex = startRoom.index;
-        const endIndex = endRoom.index;
+        const startRoomIndex = startRoomDetails.index;
+        const endRoomIndex = startRoomIndex + numOfRooms - 1;
 
-        if (startIndex > endIndex) {
-            return res.status(400).json({ error: 'Start room must be before End room' });
+        const endRoomDetails = await Room.findOne({ index: endRoomIndex });
+
+        if (!endRoomDetails) {
+            return res.status(404).json({ message: 'end room not found' });
         }
+
+        const endRoomIndex = endRoomDetails.index;
 
         const conflictingConstraints = await Constraint.find({
             $or: [
@@ -37,10 +39,11 @@ export default async (req, res) => {
 
         const newConstraintData = {
             ...rest,
+            num_of_rooms: numOfRooms,
             start_room,
             end_room,
-            start_room_index: startIndex,
-            end_room_index: endIndex
+            start_room_index: startRoomIndex,
+            end_room_index: endRoomIndex,
         };
 
         const new_constraint = await Constraint.create(newConstraintData);
