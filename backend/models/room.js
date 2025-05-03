@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 
 const RoomSchema = new Schema({
-  _id: {
+  index: {
     type: Number,
     index: true,
     required: true,
@@ -11,6 +11,7 @@ const RoomSchema = new Schema({
   },
   room_number: {
     type: String,
+    index: true,
     required: true,
     unique: true
   },
@@ -20,7 +21,7 @@ const RoomSchema = new Schema({
   allocated_to: {
     type: [String]
   }
-});
+}, { _id: false });
 
 const Room = mongoose.model('Room', RoomSchema);
 
