@@ -19,6 +19,7 @@ const AllocationRequestSchema = new Schema({
   }
 });
 
-const AllocationRequest = mongoose.model('allocationrequest', AllocationRequestSchema);
+const tableName = "AllocationRequests";
+const AllocationRequest = mongoose.model(tableName, AllocationRequestSchema, tableName);
 
 export default AllocationRequest;

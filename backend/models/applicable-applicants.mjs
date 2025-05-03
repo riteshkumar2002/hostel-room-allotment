@@ -9,5 +9,5 @@ const ApplicableApplicants = new Schema({
     }
 });
 
-export default mongoose.model('applicableapplicants', ApplicableApplicants);
-
+const tableName = "ApplicableApplicants";
+export default mongoose.model(tableName, ApplicableApplicants, tableName);

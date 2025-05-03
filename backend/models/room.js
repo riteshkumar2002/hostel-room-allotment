@@ -23,6 +23,7 @@ const RoomSchema = new Schema({
   }
 }, { _id: false });
 
-const Room = mongoose.model('Room', RoomSchema);
+const tableName = "Rooms";
+const Room = mongoose.model(tableName, RoomSchema, tableName);
 
 export default Room;

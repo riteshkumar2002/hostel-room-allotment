@@ -45,6 +45,7 @@ const UserSchema = new Schema({
   }
 });
 
-const User = mongoose.model('user', UserSchema);
+const tableName = "Users";
+const User = mongoose.model(tableName, UserSchema, tableName);
 
 export default User;

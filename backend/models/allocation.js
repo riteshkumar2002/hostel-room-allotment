@@ -15,6 +15,7 @@ const AllocationSchema = new mongoose.Schema({
   }
 });
 
-const Allocation = mongoose.model('Allocation', AllocationSchema);
+const tableName = "Allocations";
+const Allocation = mongoose.model(tableName, AllocationSchema, tableName);
 
 export default Allocation;

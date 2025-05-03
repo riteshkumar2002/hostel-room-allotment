@@ -40,6 +40,7 @@ const ConstraintSchema = new Schema({
   _id: true
 });
 
-const Constraint = mongoose.model('Constraint', ConstraintSchema);
+const tableName = "Constraints";
+const Constraint = mongoose.model(tableName, ConstraintSchema, tableName);
 
 export default Constraint;
