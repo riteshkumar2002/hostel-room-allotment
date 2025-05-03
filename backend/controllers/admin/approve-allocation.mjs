@@ -5,14 +5,14 @@ import Allocation from "../../models/allocation.js";
 import AllocationRequest from "../../models/allocation-request.mjs";
 
 export default async(req, res) => {
-    const session = mongoose.startSession();
+    const session = await mongoose.startSession();
 
     try {
         const id = req.body._id;
         const allocationRequest = await AllocationRequest.findOne({ _id: id });
 
         if(allocationRequest == null) {
-            return res.status(404).json({ "status": "failed", "message": "allocationRequest not found" });
+            throw ReferenceError("allocationRequest not found!");
         }
 
         const rooms = await Room.find({ room_number: { $in: allocationRequest.room_numbers } });
@@ -26,29 +26,37 @@ export default async(req, res) => {
         console.log(rooms);
 
         const roomNumbers = allocationRequest.room_numbers;
+        let allocated = false;
 
         for(const roomNumber of roomNumbers) {
             if(availabilities[roomNumber] > 0) {
                 session.startTransaction();
 
-                await Room.updateOne({ room_number: roomNumber }, { $push: {
+                await AllocationRequest.findOneAndDelete({ admission_number: allocationRequest.admission_number }, { session });
+
+                await Room.findOneAndUpdate({ room_number: roomNumber }, { $push: {
                     allocated_to: allocationRequest.admission_number
                 }}, { session });
 
-                await Allocation.create({
+                await Allocation.create([{
                     admission_number: allocationRequest.admission_number, 
-                    room_number: allocationRequest.room_number
-                }, { session });
+                    room_number: roomNumber
+                }], { session });
 
                 await session.commitTransaction();
+                allocated = true;
                 break;
             }
         }
 
-        res.status(404).json({ "status": "failure", "message": "no vacant room available" });
+        if(allocated) {
+            res.status(200).json({ "status": "success" });
+        } else {
+            res.status(404).json({ "status": "failure", "message": "no vacant room available" });
+        }
     } catch(err) {
         await session.abortTransaction();
-        return res.status(500).json({ "status": "failed", "message": err.message });
+        res.status(500).json({ "status": "failed", "message": err.message });
     } finally {
         await session.endSession();
     }

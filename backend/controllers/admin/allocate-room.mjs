@@ -32,7 +32,11 @@ export default async (req, res) => {
         const updatedRoom = await Room.updateOne({room_number:room.room_number},{$push:{allocated_to:admissionNumber}});
         console.log(updatedRoom);
 
-        const newAllocation = await Allocation.create({admission_no:admissionNumber, room_number:req.body.roomNumber});
+        const newAllocation = await Allocation.create({
+            admission_number: admissionNumber,
+            room_number: req.body.roomNumber
+        });
+
         res.status(201).json(newAllocation);
     } catch (err) {
         res.status(400).json({ error: err.message });

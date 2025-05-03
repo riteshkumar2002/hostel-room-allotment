@@ -12,7 +12,8 @@ export default async (req, res) => {
 
         const { admissionNumber } = req.body;
 
-        const allocation = await Allocation.findOneAndDelete({ admission_no: admissionNumber });
+        const allocation = await Allocation.findOneAndDelete({ admission_number: admissionNumber });
+        console.log(allocation);
 
         if (!allocation) {
             return res.status(404).json({ error: 'Room allocation not found' });
