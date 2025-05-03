@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 const Schema = mongoose.Schema;
 
-const SignUpSchema = new Schema({
+const UserSchema = new Schema({
   name: {
     type: String,
     required: true
@@ -14,7 +14,7 @@ const SignUpSchema = new Schema({
       unique: false
     }
   },
-  mob_no: {
+  mobile_number: {
     type: Number,
     required: true
   },
@@ -22,7 +22,7 @@ const SignUpSchema = new Schema({
     type: String,
     required: true
   },
-  adm_no: {
+  admission_number: {
     type: String,
     required: true,
     unique: true 
@@ -45,6 +45,6 @@ const SignUpSchema = new Schema({
   }
 });
 
-const SignUp = mongoose.model('SignUp', SignUpSchema);
+const User = mongoose.model('user', UserSchema);
 
-export default SignUp;
+export default User;
