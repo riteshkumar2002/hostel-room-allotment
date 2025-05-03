@@ -1,0 +1,32 @@
+/signup
+{
+    "name": "",
+    "email": "",
+    "mobileNumber: "",
+    "password":,
+    "admissionNumber":
+    "branch"
+    "year"
+    "program"
+    "course"
+}
+
+/allocate-room
+{
+    "admissionNumber": "",
+    "roomNumber": "",
+}
+
+/deallocate-room
+{
+    "admissionNumber": ""
+}
+
+/add-constraint
+{
+    "startRoomNumber": "A120",
+    "numberOfRooms": 12,
+    "program": "ug",
+    "year": "2",
+    "branch": "MnC"
+}

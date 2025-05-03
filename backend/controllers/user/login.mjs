@@ -1,9 +1,9 @@
-import SignUp from "../../models/signup.js";
+import User from "../../models/user.js";
 
 export default async function login(req, res) {
     try {
         console.log(req.body);
-        const user = await SignUp.findOne({ adm_no: req.body.adm_no });
+        const user = await User.findOne({ adm_no: req.body.adm_no });
         console.log(user);
 
         if(user.password === req.body.password) {

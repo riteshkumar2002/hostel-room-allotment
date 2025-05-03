@@ -3,11 +3,11 @@ import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 
 const ConstraintSchema = new Schema({
-  num_of_rooms: {
+  number_of_rooms: {
     type: Number,
     required: true
   },
-  start_room: {
+  start_room_number: {
     type: String,
     required: true
   },
@@ -15,7 +15,7 @@ const ConstraintSchema = new Schema({
     type: Number,
     required: true
   },
-  end_room: {
+  end_room_number: {
     type: String,
     required: true
   },
@@ -36,6 +36,8 @@ const ConstraintSchema = new Schema({
     type: String,
     required: true
   }
+}, {
+  _id: true
 });
 
 const Constraint = mongoose.model('Constraint', ConstraintSchema);

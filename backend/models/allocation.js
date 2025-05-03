@@ -7,7 +7,7 @@ const AllocationSchema = new mongoose.Schema({
     required: true,
     unique: true
   },
-  room_no: {
+  room_number: {
     type: String,
     ref: 'Room', // Reference to 'room_no' in Room collection
     required: true

@@ -1,3 +1,5 @@
+import Constraint from "../../models/constraint.js";
+
 export default async (req, res) => {
     try {
         const { id } = req.params;

@@ -1,6 +1,6 @@
 import { Router } from "express";
 
-import signUp from "./sign-up.mjs";
+import signUp from "./signup.mjs";
 import login from "./login.mjs";
 
 
