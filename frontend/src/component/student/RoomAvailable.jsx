@@ -36,6 +36,8 @@ const RoomAvailable = () => {
     const filteredRooms = [
       { room_number: 'C101', capacity: 2, occupied: 1 },
       { room_number: 'C102', capacity: 2, occupied: 0 },
+      { room_number: 'B115', capacity: 2, occupied: 0 },
+      { room_number: 'B114', capacity: 2, occupied: 1 },
       { room_number: 'C103', capacity: 2, occupied: 2 }
     ];
     setAvailableRooms(filteredRooms);
@@ -108,7 +110,8 @@ const handleSubmitSelectedRooms = async () => {
   console.log(selectedRooms);
   try {
     const response = await axios.post(`${API}/api/user/allocation-request`, {
-      rooms: selectedRooms,
+      roomNumbers: selectedRooms,
+      admissionNumber:"20je0793"
     });
 
     setMessage('Rooms submitted successfully!');
