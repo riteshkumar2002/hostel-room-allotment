@@ -68,7 +68,6 @@ export default async(req, res)=> {
         );
 
         await session.commitTransaction();
-        
         return res.status(200).json({ "status": "success"});
 
     } catch(error) {
@@ -76,7 +75,7 @@ export default async(req, res)=> {
         return res.status(500).json({ "status": "failed", "message": error.message });
     }
     finally {
-        session.endSession();
+        await session.endSession();
     }
     
 }
