@@ -3,7 +3,7 @@ import Constraint from '../../models/constraint.js';
 export default async (req, res) => {
     try {
         const startRoomNumber = req.body.startRoomNumber;
-        const numberOfRooms = req.body.numberOfRooms;
+        const numberOfRooms = Number(req.body.numberOfRooms);
 
         const startRoom = await Room.findOne({ room_number: startRoomNumber });
 
@@ -13,6 +13,7 @@ export default async (req, res) => {
 
         const startRoomIndex = startRoom.index;
         const endRoomIndex = startRoomIndex + numberOfRooms - 1;
+
         const endRoom = await Room.findOne({ index: endRoomIndex });
 
         if (!endRoom) {
