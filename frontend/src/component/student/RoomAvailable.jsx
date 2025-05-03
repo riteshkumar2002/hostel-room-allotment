@@ -12,13 +12,13 @@ const RoomAvailable = () => {
     branch: ''
   });
   const [availableRooms, setAvailableRooms] = useState([]);
+  const [selectedRooms, setSelectedRooms] = useState([]);
 
   // Options
   const programOptions = data.programOptions;
   const categoryOptions = data.categoryOptions;
   const yearOptions = data.yearOptions;
   const branchOptions = data.branchOptions;
-
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -31,15 +31,17 @@ const RoomAvailable = () => {
     }));
   };
 
-  const handleSubmit = async(e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const filteredRooms = [
-      { id: 1, hostelName: 'Hostel A', roomNo: '101', status: 'Available', applied: false },
-      { id: 2, hostelName: 'Hostel B', roomNo: '202', status: 'Partial Available', applied: false },
-      { id: 3, hostelName: 'Hostel C', roomNo: '303', status: 'Occupied' }
+      { room_number: 'C101', capacity: 2, occupied: 1 },
+      { room_number: 'C102', capacity: 2, occupied: 0 },
+      { room_number: 'C103', capacity: 2, occupied: 2 }
     ];
     setAvailableRooms(filteredRooms);
+    setSelectedRooms([]);
 
+    // Uncomment for real API:
     // try {
     //   const response = await axios.post(`${API}/api/user/check-available-rooms`, {
     //     program: formValues.program,
@@ -47,19 +49,19 @@ const RoomAvailable = () => {
     //     year: formValues.year,
     //     branch: formValues.branch
     //   });
-  
-    //   // Replace with actual response structure
     //   setAvailableRooms(response.data.rooms || []);
+    //   setSelectedRooms([]);
     // } catch (error) {
     //   console.error('Error fetching available rooms:', error);
     // }
   };
 
-  const handleApply = (roomId) => {
-    setAvailableRooms((prevRooms) =>
-      prevRooms.map((room) =>
-        room.id === roomId ? { ...room, applied: true } : room
-      )
+  const toggleRoomSelection = (roomNumber, isAvailable) => {
+    if (!isAvailable) return;
+    setSelectedRooms((prev) =>
+      prev.includes(roomNumber)
+        ? prev.filter((room) => room !== roomNumber)
+        : [...prev, roomNumber]
     );
   };
 
@@ -71,32 +73,52 @@ const RoomAvailable = () => {
     formValues.program === 'UG' && formValues.category === 'B.Tech.'
       ? yearOptions.BTech
       : formValues.program === 'UG' && availableCategories.includes(formValues.category)
-      ? yearOptions.FiveYearPrograms
-      : formValues.program === 'PG' && formValues.category === 'M.Sc.'
-      ? yearOptions.msc
-      : formValues.program === 'PG' && formValues.category === 'M.Tech.'
-      ? yearOptions.mtech
-      : formValues.program === 'PG' && formValues.category === 'MBA'
-      ? yearOptions.mba
-      : formValues.program === 'Doctoral'
-      ? yearOptions.PhD
-      : [];
+        ? yearOptions.FiveYearPrograms
+        : formValues.program === 'PG' && formValues.category === 'M.Sc.'
+          ? yearOptions.msc
+          : formValues.program === 'PG' && formValues.category === 'M.Tech.'
+            ? yearOptions.mtech
+            : formValues.program === 'PG' && formValues.category === 'MBA'
+              ? yearOptions.mba
+              : formValues.program === 'Doctoral'
+                ? yearOptions.PhD
+                : [];
 
-      const getAvailableBranches = () => {
-        if (formValues.program === 'UG') {
-          if (formValues.category === 'B.Tech.') return branchOptions.btech;
-          if (formValues.category === '5-year Integrated M.Tech.') return branchOptions.intmtech;
-          if (formValues.category === 'Dual Degree') return branchOptions.dualdegree;
-          if (formValues.category === 'Double Major') return branchOptions.doublemajor;
-        } else if (formValues.program === 'PG') {
-          if (formValues.category === 'M.Sc. (Tech)') return branchOptions.msc;
-          if (formValues.category === 'M.Tech.') return branchOptions.mtech;
-          if (formValues.category === 'MBA') return branchOptions.mba;
-        }
-        return [];
-      };
-      
-      const availableBranches = getAvailableBranches();
+  const getAvailableBranches = () => {
+    if (formValues.program === 'UG') {
+      if (formValues.category === 'B.Tech.') return branchOptions.btech;
+      if (formValues.category === '5-year Integrated M.Tech.') return branchOptions.intmtech;
+      if (formValues.category === 'Dual Degree') return branchOptions.dualdegree;
+      if (formValues.category === 'Double Major') return branchOptions.doublemajor;
+    } else if (formValues.program === 'PG') {
+      if (formValues.category === 'M.Sc. (Tech)') return branchOptions.msc;
+      if (formValues.category === 'M.Tech.') return branchOptions.mtech;
+      if (formValues.category === 'MBA') return branchOptions.mba;
+    }
+    return [];
+  };
+
+  const availableBranches = getAvailableBranches();
+
+
+  const [message, setMessage] = useState('');
+
+// Handle selected room submission
+const handleSubmitSelectedRooms = async () => {
+  console.log(selectedRooms);
+  try {
+    const response = await axios.post(`${API}/api/user/allocation-request`, {
+      rooms: selectedRooms,
+    });
+
+    setMessage('Rooms submitted successfully!');
+    // Optionally reset selection
+    setSelectedRooms([]);
+  } catch (error) {
+    console.error('Error submitting rooms:', error);
+    setMessage('Error submitting rooms. Please try again.');
+  }
+};
 
   return (
     <>
@@ -104,7 +126,6 @@ const RoomAvailable = () => {
       <div style={styles.container}>
         <h2 style={styles.title}>Check Available Rooms</h2>
         <form onSubmit={handleSubmit} style={styles.form}>
-
           {/* Program */}
           <label>
             Program:
@@ -123,7 +144,7 @@ const RoomAvailable = () => {
             </select>
           </label>
 
-          {/* Category - only shown if program isn't Doctoral */}
+          {/* Category */}
           {formValues.program && formValues.program !== 'Doctoral' && (
             <label>
               Category:
@@ -143,7 +164,7 @@ const RoomAvailable = () => {
             </label>
           )}
 
-          {/* Year - shown if category selected or program is Doctoral */}
+          {/* Year */}
           {(formValues.program === 'Doctoral' || formValues.category) && availableYears.length > 0 && (
             <label>
               Year:
@@ -163,7 +184,7 @@ const RoomAvailable = () => {
             </label>
           )}
 
-          {/* Branch - only if UG program */}
+          {/* Branch */}
           {formValues.year && availableBranches.length > 0 && (
             <label>
               Branch:
@@ -191,30 +212,66 @@ const RoomAvailable = () => {
         <div style={styles.roomList}>
           <h3>Available Rooms</h3>
           {availableRooms.length > 0 ? (
-            <div style={styles.cardContainer}>
-              {availableRooms.map((room) => (
-                <div key={room.id} style={styles.roomCard}>
-                  <p><strong>Hostel:</strong> {room.hostelName}</p>
-                  <p><strong>Room No:</strong> {room.roomNo}</p>
-                  <p><strong>Status:</strong> {room.status}</p>
-                  {(room.status === 'Available' || room.status === 'Partial Available') && (
-                    <button
-                      onClick={() => handleApply(room.id)}
+            <div style={styles.roomGrid}>
+              {availableRooms.map((room) => {
+                const isAvailable = room.capacity - room.occupied > 0;
+                const isSelected = selectedRooms.includes(room.room_number);
+
+                return (
+                  <div key={room.room_number} style={styles.roomBoxContainer}>
+                    <div
+                      onClick={() => toggleRoomSelection(room.room_number, isAvailable)}
                       style={{
-                        ...styles.applyButton,
-                        backgroundColor: room.applied ? 'green' : 'red'
+                        ...styles.roomBox,
+                        backgroundColor: isSelected
+                          ? 'blue'
+                          : isAvailable
+                            ? 'green'
+                            : 'white',
+                        color: isSelected || isAvailable ? 'white' : 'black',
+                        cursor: isAvailable ? 'pointer' : 'not-allowed',
+                        opacity: isAvailable ? 1 : 0.5
                       }}
-                      disabled={room.applied}
                     >
-                      {room.applied ? 'Applied' : 'Apply'}
-                    </button>
-                  )}
-                </div>
-              ))}
+                      {room.room_number}
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           ) : (
             <p>No available rooms match your criteria.</p>
           )}
+
+{selectedRooms.length > 0 && (
+  <div style={{ marginTop: '1rem' }}>
+    <h4>Selected Rooms:</h4>
+    <ul>
+      {selectedRooms.map((room, index) => (
+        <li key={index}>{room}</li>
+      ))}
+    </ul>
+    <button
+      onClick={handleSubmitSelectedRooms}
+      style={{
+        marginTop: '1rem',
+        padding: '0.5rem 1.5rem',
+        backgroundColor: '#007bff',
+        color: '#fff',
+        border: 'none',
+        borderRadius: '5px',
+        cursor: 'pointer'
+      }}
+    >
+      Submit Selection
+    </button>
+    {message && (
+      <p style={{ marginTop: '0.5rem', color: message.includes('successfully') ? 'green' : 'red' }}>
+        {message}
+      </p>
+    )}
+  </div>
+)}
         </div>
       </div>
     </>
@@ -223,6 +280,29 @@ const RoomAvailable = () => {
 
 // CSS-in-JS
 const styles = {
+  roomGrid: {
+    display: 'flex',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center'
+  },
+  roomBoxContainer: {
+    margin: '0.5rem'
+  },
+  roomBox: {
+    width: "56px",
+    height: "56px",
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    border: '2px solid #ccc',
+    borderRadius: '10px',
+    fontWeight: 'bold',
+    fontSize: '1rem',
+    cursor: 'pointer',
+    transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+    boxShadow: '0 2px 5px rgba(0, 0, 0, 0.1)'
+  },
   container: {
     padding: '2rem',
     fontFamily: 'Arial, sans-serif',
@@ -261,29 +341,6 @@ const styles = {
   roomList: {
     marginTop: '2rem',
     textAlign: 'center'
-  },
-  cardContainer: {
-    display: 'flex',
-    gap: '1rem',
-    flexWrap: 'wrap',
-    justifyContent: 'center'
-  },
-  roomCard: {
-    border: '1px solid #ddd',
-    borderRadius: '8px',
-    padding: '1rem',
-    width: '200px',
-    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-    backgroundColor: '#f9f9f9'
-  },
-  applyButton: {
-    color: '#fff',
-    border: 'none',
-    padding: '0.5rem 1rem',
-    borderRadius: '4px',
-    cursor: 'pointer',
-    fontWeight: 'bold',
-    marginTop: '0.5rem'
   }
 };
 
