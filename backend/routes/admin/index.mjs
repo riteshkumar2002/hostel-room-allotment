@@ -5,6 +5,7 @@ import deleteConstraint from './delete-constraint.mjs'
 import getConstraints from './get-constraints.mjs'
 
 import approveAll from './approve-all.mjs'
+import rejectAll from "./reject-all.mjs";
 import approveAllocation from './approve-allocation.mjs'
 
 import getAllAllocationRequests from "./get-all-allocation-requests.mjs"
@@ -26,6 +27,7 @@ router.use(
     deallocateRoom,
     applicableApplicants,
     getAllAllocationRequests,
+    rejectAll,
 );
 export default router;
 
