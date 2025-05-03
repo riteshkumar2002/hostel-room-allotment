@@ -28,6 +28,6 @@ export default async (req, res) => {
         await session.abortTransaction();
         res.status(500).json({ error: err.message });
     } finally {
-        session.endSession();
+        await session.endSession();
     }
 }
