@@ -2,19 +2,20 @@ import Room from '../../models/room.js'
 import Constraint from '../../models/constraint.js';
 export default async (req, res) => {
     try {
-        const { startRoom, numOfRooms, ...rest } = req.body;
+        const startRoomNumber = req.body.startRoomNumber;
+        const numberOfRooms = req.body.numberOfRooms;
 
-        const startRoomDetails = await Room.findOne({ room_no: startRoom });
+        const startRoom = await Room.findOne({ room_number: startRoomNumber });
 
-        if (!startRoomDetails) {
+        if (!startRoom) {
             return res.status(404).json({ message: 'Start room not found' });
         }
 
-        const startRoomIndex = startRoomDetails.index;
-        const endRoomIndex = startRoomIndex + numOfRooms - 1;
-        const endRoomDetails = await Room.findOne({ index: endRoomIndex });
+        const startRoomIndex = startRoom._id;
+        const endRoomIndex = startRoomIndex + numberOfRooms - 1;
+        const endRoom = await Room.findOne({ _id: endRoomIndex });
 
-        if (!endRoomDetails) {
+        if (!endRoom) {
             return res.status(404).json({ message: 'end room not found' });
         }
 
@@ -35,12 +36,14 @@ export default async (req, res) => {
         }
 
         const newConstraintData = {
-            ...rest,
-            num_of_rooms: numOfRooms,
-            start_room: startRoom,
-            end_room: endRoomDetails.room_no,
+            number_of_rooms: numberOfRooms,
+            start_room_number: startRoomNumber,
             start_room_index: startRoomIndex,
+            end_room_number: endRoom.room_number,
             end_room_index: endRoomIndex,
+            program: req.body.program,
+            branch: req.body.branch,
+            year: req.body.year
         };
 
         const new_constraint = await Constraint.create(newConstraintData);
