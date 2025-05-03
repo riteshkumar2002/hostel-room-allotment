@@ -11,9 +11,9 @@ export default async (req, res) => {
             return res.status(404).json({ message: 'Start room not found' });
         }
 
-        const startRoomIndex = startRoom._id;
+        const startRoomIndex = startRoom.index;
         const endRoomIndex = startRoomIndex + numberOfRooms - 1;
-        const endRoom = await Room.findOne({ _id: endRoomIndex });
+        const endRoom = await Room.findOne({ index: endRoomIndex });
 
         if (!endRoom) {
             return res.status(404).json({ message: 'end room not found' });
