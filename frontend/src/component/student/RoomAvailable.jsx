@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
 import Student_Navbar from './Student_navbar';
+import data from '../details';
+import axios from 'axios';
+import { API } from '../../config';
 
 const RoomAvailable = () => {
   const [formValues, setFormValues] = useState({
@@ -11,20 +14,11 @@ const RoomAvailable = () => {
   const [availableRooms, setAvailableRooms] = useState([]);
 
   // Options
-  const programOptions = ['UG', 'PG', 'Doctoral'];
-  const categoryOptions = {
-    UG: ['B.Tech.', '5-year Integrated M.Tech.', 'Dual Degree', 'Double Major'],
-    PG: ['M.Sc. (Tech)', 'M.Tech.', 'MBA']
-  };
-  const yearOptions = {
-    BTech: [1, 2, 3, 4],
-    FiveYearPrograms: [1, 2, 3, 4, 5],
-    PG: [1, 2, 3],
-    PhD: [1, 2, 3, 4, 5, 6, 7, 8]
-  };
-  const branchOptions = {
-    UG: ['CSE', 'M&C', 'ECE', 'EE', 'PE', 'Mining Engineering', 'Civil', 'FME']
-  };
+  const programOptions = data.programOptions;
+  const categoryOptions = data.categoryOptions;
+  const yearOptions = data.yearOptions;
+  const branchOptions = data.branchOptions;
+
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -37,7 +31,7 @@ const RoomAvailable = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
     const filteredRooms = [
       { id: 1, hostelName: 'Hostel A', roomNo: '101', status: 'Available', applied: false },
@@ -45,6 +39,20 @@ const RoomAvailable = () => {
       { id: 3, hostelName: 'Hostel C', roomNo: '303', status: 'Occupied' }
     ];
     setAvailableRooms(filteredRooms);
+
+    // try {
+    //   const response = await axios.post(`${API}/api/user/check-available-rooms`, {
+    //     program: formValues.program,
+    //     category: formValues.category,
+    //     year: formValues.year,
+    //     branch: formValues.branch
+    //   });
+  
+    //   // Replace with actual response structure
+    //   setAvailableRooms(response.data.rooms || []);
+    // } catch (error) {
+    //   console.error('Error fetching available rooms:', error);
+    // }
   };
 
   const handleApply = (roomId) => {
@@ -64,13 +72,31 @@ const RoomAvailable = () => {
       ? yearOptions.BTech
       : formValues.program === 'UG' && availableCategories.includes(formValues.category)
       ? yearOptions.FiveYearPrograms
-      : formValues.program === 'PG'
-      ? yearOptions.PG
+      : formValues.program === 'PG' && formValues.category === 'M.Sc.'
+      ? yearOptions.msc
+      : formValues.program === 'PG' && formValues.category === 'M.Tech.'
+      ? yearOptions.mtech
+      : formValues.program === 'PG' && formValues.category === 'MBA'
+      ? yearOptions.mba
       : formValues.program === 'Doctoral'
       ? yearOptions.PhD
       : [];
 
-  const availableBranches = formValues.program === 'UG' ? branchOptions.UG : [];
+      const getAvailableBranches = () => {
+        if (formValues.program === 'UG') {
+          if (formValues.category === 'B.Tech.') return branchOptions.btech;
+          if (formValues.category === '5-year Integrated M.Tech.') return branchOptions.intmtech;
+          if (formValues.category === 'Dual Degree') return branchOptions.dualdegree;
+          if (formValues.category === 'Double Major') return branchOptions.doublemajor;
+        } else if (formValues.program === 'PG') {
+          if (formValues.category === 'M.Sc. (Tech)') return branchOptions.msc;
+          if (formValues.category === 'M.Tech.') return branchOptions.mtech;
+          if (formValues.category === 'MBA') return branchOptions.mba;
+        }
+        return [];
+      };
+      
+      const availableBranches = getAvailableBranches();
 
   return (
     <>
@@ -138,7 +164,7 @@ const RoomAvailable = () => {
           )}
 
           {/* Branch - only if UG program */}
-          {formValues.year && formValues.program === 'UG' && (
+          {formValues.year && availableBranches.length > 0 && (
             <label>
               Branch:
               <select

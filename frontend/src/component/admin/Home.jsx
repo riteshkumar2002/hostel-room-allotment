@@ -1,5 +1,6 @@
 import React from "react";
 import Admin_Navbar from "./Admin_navbar";
+import Student_Navbar from "../student/Student_navbar.jsx";
 
 import RoomConstraint from "./RoomConstraint.jsx";
 import RoomAllocationRequest from "./RoomAllocationRequestList.js";
@@ -11,13 +12,8 @@ import RoomChangeRequest from "../student/RoomChangeRequest.jsx";
 
 const Home = ()=>{
     return <>
-    <Admin_Navbar/>
-    <RoomConstraint/>
-    <RoomAllocationRequest/>
-    <Allocate/>
-    <Deallocate/>
+    {/* <Student_Navbar/> */}
     <RoomAvailable/>
-    <RoomChangeRequest/>
     </>
 }
 

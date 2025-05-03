@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Admin_Navbar from './Admin_navbar';
 import RoomAllocationRequestContainer from './RoomAllocationRequestContainer';
+import axios from 'axios';
+import { API } from '../../config';
 
 const RoomAllocationRequest = () => {
   const [requests, setRequests] = useState([
@@ -15,10 +17,31 @@ const RoomAllocationRequest = () => {
     { name: 'Peter Anderson', admissionNo: '55667', branch: 'PH', roomNo: 'I-909' }
   ]);
 
-  const handleApprove = (request) => {
-    console.log('Approved:', request);
-  };
 
+  useEffect(() => {
+    axios.get(`${API}/api/admin/get-all-request`)
+      .then(response => {
+        // setRequests(response.data);
+        console.log('Data:', response.data);
+      })
+      .catch(error => {
+        console.error('Error fetching data:', error);
+      });
+
+  }, []);
+
+  const handleApprove = (request) => {
+    axios.post(`${API}/api/admin/`, {
+      requestId: request.id,   
+      status: 'approved'
+    })
+    .then(response => {
+      console.log('Request approved:', response.data);
+    })
+    .catch(error => {
+      console.error('Error approving request:', error);
+    });
+  };
   const handleReject = (request) => {
     console.log('Not Approved:', request);
   };
@@ -27,7 +50,7 @@ const RoomAllocationRequest = () => {
     requests.forEach(request => {
       console.log('Approved:', request);
     });
-    // Optionally, clear all requests after approving
+
     setRequests([]);
   };
 
@@ -35,59 +58,59 @@ const RoomAllocationRequest = () => {
     requests.forEach(request => {
       console.log('Not Approved:', request);
     });
-    // Optionally, clear all requests after rejecting
+
     setRequests([]);
   };
 
   return (
     <>
-    <Admin_Navbar/>
-    <div style={styles.requestListContainer}>
-      <h1 style={styles.requestListTitle}>Requested Room List</h1>
-      <table style={styles.table}>
-        <thead>
-          <tr>
-            <th style={styles.headerCell}>Name</th>
-            <th style={styles.headerCell}>Admission No</th>
-            <th style={styles.headerCell}>Branch</th>
-            <th style={styles.headerCell}>Room No</th>
-            <th style={styles.headerCell}>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {requests.map((request, index) => (
-            <tr key={index} style={styles.row}>
-              <td style={styles.cell}>{request.name}</td>
-              <td style={styles.cell}>{request.admissionNo}</td>
-              <td style={styles.cell}>{request.branch}</td>
-              <td style={styles.cell}>{request.roomNo}</td>
-              <td style={styles.cell}>
-                <button
-                  onClick={() => handleApprove(request)}
-                  style={{ ...styles.button, ...styles.approveButton }}
-                >
-                  Approve
-                </button>
-                <button
-                  onClick={() => handleReject(request)}
-                  style={{ ...styles.button, ...styles.rejectButton }}
-                >
-                  Reject
-                </button>
-              </td>
+      <Admin_Navbar />
+      <div style={styles.requestListContainer}>
+        <h1 style={styles.requestListTitle}>Requested Room List</h1>
+        <table style={styles.table}>
+          <thead>
+            <tr>
+              <th style={styles.headerCell}>Name</th>
+              <th style={styles.headerCell}>Admission No</th>
+              <th style={styles.headerCell}>Branch</th>
+              <th style={styles.headerCell}>Room No</th>
+              <th style={styles.headerCell}>Actions</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
-      <div style={styles.actionButtons}>
-        <button onClick={handleApproveAll} style={{ ...styles.button, ...styles.approveAllButton }}>
-          Approve All
-        </button>
-        <button onClick={handleRejectAll} style={{ ...styles.button, ...styles.rejectAllButton }}>
-          Reject All
-        </button>
+          </thead>
+          <tbody>
+            {requests.map((request, index) => (
+              <tr key={index} style={styles.row}>
+                <td style={styles.cell}>{request.name}</td>
+                <td style={styles.cell}>{request.admissionNo}</td>
+                <td style={styles.cell}>{request.branch}</td>
+                <td style={styles.cell}>{request.roomNo}</td>
+                <td style={styles.cell}>
+                  <button
+                    onClick={() => handleApprove(request)}
+                    style={{ ...styles.button, ...styles.approveButton }}
+                  >
+                    Approve
+                  </button>
+                  <button
+                    onClick={() => handleReject(request)}
+                    style={{ ...styles.button, ...styles.rejectButton }}
+                  >
+                    Reject
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <div style={styles.actionButtons}>
+          <button onClick={handleApproveAll} style={{ ...styles.button, ...styles.approveAllButton }}>
+            Approve All
+          </button>
+          <button onClick={handleRejectAll} style={{ ...styles.button, ...styles.rejectAllButton }}>
+            Reject All
+          </button>
+        </div>
       </div>
-    </div>
     </>
   );
 };
