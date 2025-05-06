@@ -6,7 +6,7 @@ export default async function getAllAllocationRequests(req, res) {
         const allocations = await AllocationRequest.aggregate([
             {
                 $lookup: {
-                    from: "users",
+                    from: User.collection.collectionName,
                     localField: "admission_number",
                     foreignField: "admission_number",
                     as: "userDetails"
